@@ -1,6 +1,7 @@
 # Hack Cambridge 2020
 
 ### Team Submission: A Multi-Agent's Paradise
+### People's Choice Prize Winner
 
 ### Authors:
 - Joe Arrowsmith
