@@ -64,8 +64,9 @@ var map = [[-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
 [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
  [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]];
 
-//var ws = new WebSocket("ws://86737b81.eu.ngrok.io/");
-var ws = new WebSocket("ws://2660d191.eu.ngrok.io");
+var ws = new WebSocket("ws://8f0dfa6d.eu.ngrok.io/");
+// var ws = new WebSocket("ws://localhost:5678");
+
 
 
 // END OF GLOBAL VARIABLES
@@ -99,7 +100,7 @@ ws.onopen = function() {
 
     if(mapRender == true) {
       dataJSON.positions.forEach(e => {
-        if(playerIds.has(e.id) == true) {         
+        if(playerIds.has(e.id) == true) {
           // the player is already on the canvas
           // update the player state
           updatePosition(e);
@@ -332,7 +333,7 @@ var player = svg.selectAll("player")
 function fogRemoval() {
   var px = parseInt(player.attr("x"));
   var py = parseInt(player.attr("y"));
-  
+
   var ii = px - ((fogCells-1)/2 * sz) - sz;
   for (var i=0; i < fogCells; i++) {
     ii = ii+sz;
@@ -470,13 +471,13 @@ var force = d3.layout.force()
 
 
 force.on("tick", function () {
-      
+
   var ball = svg.selectAll(".ball");
   ball.attr("cx", function (d) { return d.x; })
     .attr("cy", function (d) { return d.y; })
     .each(function(b) {
       detectCollisions(b);
-      
+
       var cc = ballCell(b);
       var tc = topCell(cc);
       var lc = leftCell(cc);
@@ -491,7 +492,7 @@ force.on("tick", function () {
         cc.isWall = b.isMoving = false;
       }
   });
-  
+
   var head = svg.selectAll(".head");
   head.attr("x", function(d) { d.x += d.dx * (v * .4); return rectx(d); })
     .attr("y", function(d) { d.y += d.dy * (v * .4); return recty(d); })
@@ -502,7 +503,7 @@ force.on("tick", function () {
         .attr("width", tailw)
         .attr("height", tailh);
     });
-  
+
   var ground = svg.selectAll(".ground");
   var tail = svg.selectAll(".tail");
   var wallWasBuilt = false;
@@ -535,11 +536,11 @@ force.on("tick", function () {
         .remove();
       wallWasBuilt = true;
     }).remove();
-  
+
   if (wallWasBuilt) {
     fillEmptyRooms();
   }
-  
+
   var timePlayed = Math.floor(((new Date().getTime()) - gameStartedAt) / 100);
   timeLeft = timePlayed > t ? 0 : t - timePlayed;
   svg.select("#timeLeftText")
@@ -588,7 +589,7 @@ function detectCollisions(b) {
       var x1 = x0 + w;
       var y0 = taily(t);
       var y1 = y0 + h;
-      
+
       return x0 - r < b.x && b.x < x1 - r && y0 - r < b.y && b.y < y1 + r;
     })
     .each(function(t) {
@@ -598,7 +599,7 @@ function detectCollisions(b) {
         svg.selectAll(".head." + t.cl).remove();
       })
     .remove();
-  
+
   // wall borders collision
   var cc = ballCell(b);
   var tc = topCell(cc);
@@ -635,7 +636,7 @@ function detectCollisions(b) {
       }
     }
   });
-  
+
   // wall corners collision
   var tlc = topLeftCell(cc);
   if (!tc.isWall && !lc.isWall && tlc.isWall && (sd = cornerSquareDistance(b.x, b.y, tlc.x + r, tlc.y + r)) <= sr) {

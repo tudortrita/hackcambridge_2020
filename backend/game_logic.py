@@ -10,7 +10,7 @@ import grid
 
 class Player:
     def __init__(self, human, uid, x, y, team_id):
-        self.human = human 
+        self.human = human
         self.uid = uid
         self.x = x
         self.y = y
@@ -40,7 +40,7 @@ class Game:
         #2 - Game finished
         self.state = -1
         self.start_countdown = 3
-        self.alive_count = 0        
+        self.alive_count = 0
         self.teamcount = 1
         self.team_alive = {}
         self.shrink_counter = 5
@@ -98,7 +98,7 @@ class Game:
     def handle_request(self, id_val, request):
         if request == "map":
             return ["map", self.board.tolist()]
-            
+
     def handle_action(self, id_val, action):
         self.actions[action](self.players[id_val])
 
@@ -151,8 +151,8 @@ class Game:
             render_copy[v.x][v.y] = mapping[v.team_id]
 
         return render_copy
-            
-        
+
+
     def generate_map(self):
         return np.loadtxt("map_4060.txt")
 
@@ -160,7 +160,7 @@ class Game:
     def run_die(self, pid):
         pid.alive = False
         self.team_alive[pid.team_id] -= 1
-        
+
         alive_track = 0
         winner_id = None
         for team, count in self.team_alive.items():
@@ -255,8 +255,8 @@ def load_config(path):
     return config
 
 if __name__ == "__main__":
-    config = load_config("./config.json") 
+    game_map = grid.generate_random_map(size=(40, 60))
+    np.savetxt("map_4060.txt", game_map, fmt="%d")
+    config = load_config("./config.json")
     game = Game(config=config)
     server.run_server("127.0.0.1", 5678, game)
-    
-

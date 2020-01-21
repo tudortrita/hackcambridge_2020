@@ -1,6 +1,7 @@
 import asyncio, websockets
 import datetime, uuid, sys
 import random, string, json
+import time
 
 connections = {}
 
@@ -22,7 +23,7 @@ async def main(game, websocket, path):
     # Unique ID for the game
     uIDJson = json.dumps({'type': 'uID', 'uID': ws_id})
     await websocket.send(uIDJson)
-    
+
 
     try:
         async for message in websocket:
@@ -53,12 +54,12 @@ def ai_check(message):
         mess = json.loads(message)
     except json.decoder.JSONDecodeError as e:
         return False
-    
+
     if "ai" in mess:
         return True
     else:
         return False
-    
+
 
 def validate_message(message):
     try:
@@ -74,11 +75,11 @@ def validate_message(message):
 def clear_queue():
     for _, v in connections.items():
         v["message"] = {}
-    
+
 async def game_tick(game):
     while True:
         if game.state == -1:
-            if len(connections) >= 1:
+            if len(connections) >= 2:
                 game.state = 0
 
             print("state -1")
@@ -119,7 +120,7 @@ async def game_tick(game):
                     resp[0] = "status"
                     resp[1] = "winner"
 
-                
+
 
                 if game.players[player_id].human:
                     reply = {"response" : resp[0],
@@ -148,7 +149,7 @@ async def game_tick(game):
             #    print("SHRINK")
             #    game.shrink()
             #    game.shrink_counter = 5
-            #    
+            #
             #    for pid, vals in connections.items():
             #        await connections[pid]["sock"].send( json.dumps({
             #                            "response" : "map",
@@ -156,7 +157,7 @@ async def game_tick(game):
             #                            "update" : None,
             #                            "positions" : game.get_positions()}))
 
-                
+
             await asyncio.sleep(0.05)
 
 
@@ -164,7 +165,7 @@ def run_server(serverIP, port, game):
     print('Starting socket server....')
     print(f'Running on http://{serverIP}:{port}')
     start_server = websockets.serve(lambda x, y:main(game, x, y), serverIP, port)
-    
+
     loop = asyncio.get_event_loop()
     loop.run_until_complete(start_server)
     #loop.create_task(status())
